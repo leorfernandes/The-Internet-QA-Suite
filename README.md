@@ -22,7 +22,7 @@ This project serves as a comprehensive validation of "The Internet" by Heroku, a
 ## Project Status: v0.1 (Design Phase)
 The current version represents the **Test Design** phase.
 
-For real-time development status, see TODO.md.
+For real-time development status, see [TODO.md](/TODO.md).
 
 ---
 **Contact:** Leonardo dos Reis Fernandes  
