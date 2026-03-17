@@ -1,35 +1,38 @@
 import { test, expect, describe } from '@playwright/test';
 
-test.fixme('Basic Auth Feature - Needs Investigation', () => {
-test('Basic Auth with Dialog Listener', async ({ page }) => {
-  await page.goto(mainPage);
+test.describe('Context Authentication Feature', () => {
+test('Basic Auth via Context', async ({ browser }) => {
+  // Create a new context with the credentials pre-loaded
+  const context = await browser.newContext({
+    extraHTTPHeaders: {
+      Authorization: `Basic ${Buffer.from('admin:admin').toString('base64')}`
+    }
+  });
+  const page = await context.newPage();
+
+  await page.goto('https://the-internet.herokuapp.com/basic_auth');
   
-  // 1. REGISTER the listener FIRST
-  page.on('dialog', async dialog => {
-    await expect(dialog.accept('admin:admin')).toBeTruthy();
-    await dialog.dismiss();  
-  }); // Accept the dialog with the credentials "admin:admin"
-
-  // Expect the success message to be visible on the page after successful authentication.
-  await expect(page.getByText('Congratulations! You must have the proper credentials.')).toBeVisible();
-
+  await expect(page.getByText('Congratulations!'))
+    .toBeVisible();
+    
+  await context.close();
 });
 
-test('Authentication Failure', async ({ page }) => {
-  await page.goto(mainPage);
+test('Authentication Failure via Context', async ({ browser }) => {
+  // Create a new context with the credentials pre-loaded
+  const context = await browser.newContext({
+    extraHTTPHeaders: {
+      Authorization: `Basic ${Buffer.from('wrongLogin:wrongPassword').toString('base64')}`
+    }
+  });
+  const page = await context.newPage();
 
-  // Go to the login page.
-  await page.getByRole('link', { name: 'Form Authentication' }).click();
-
-  // Fill in the username and password fields with incorrect credentials.
-  await page.getByLabel('Username').fill('invalidUser');
-  await page.getByLabel('Password').fill('invalidPassword');
-
-  // Click the login button.
-  await page.getByRole('button', { name: 'Login' }).click();
-
-  // Expect an error message to be visible on the page after failed authentication.
-  await expect(page.getByText('Your username is invalid!')).toBeVisible();
+  await page.goto('https://the-internet.herokuapp.com/basic_auth');
+  
+  await expect(page.getByText('Not authorized'))
+    .toBeVisible();
+    
+  await context.close();
 });
 });
 

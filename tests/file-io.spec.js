@@ -28,7 +28,7 @@ test.describe('File Upload Tests', () => {
     }
   });
 
-  // Test Case: TP-8
+// Test Case: TP-8
 test('File Upload', async ({ page }) => {
   await page.goto('/');
 
@@ -60,22 +60,21 @@ test('No file selected in File Upload', async ({ page }) => {
 });
 
 // Test Case: TP-16
-test.fixme('Large File Upload - Needs investigation', async ({ page }) => { 
 test('Large File Upload', async ({ page }) => {
+  test.setTimeout(120000); // Set timeout to 2 minutes for file creation
   await page.goto('/');
 
   // Click on the "File Upload" link to navigate to the file upload page.
-  await page.getByRole('link', { name: 'File Upload' }).click();
+  await page.getByRole('link', { name: 'File Upload' }).click({ timeout: 60000 });
 
   // Set the file input to a large file path.
   await page.setInputFiles('#file-upload', largeFilePath);
 
   // Click the upload button to submit the file.
-  await page.getByRole('button', { name: 'Upload' }).click();
+  await page.getByRole('button', { name: 'Upload' }).click({ timeout: 60000 });
 
   // Expect the uploaded file name to be visible on the page after successful upload.
-  await expect(page.getByText('large_file')).toBeVisible();
-});
+  await expect(page.getByText('large_file')).toBeVisible({ timeout: 60000 });
 });
 
 test.describe('File Download Cases', () => {
